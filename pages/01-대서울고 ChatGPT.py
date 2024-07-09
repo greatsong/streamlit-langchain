@@ -112,56 +112,6 @@ def print_history():
         tab1.chat_message("user").write(st.session_state["user"][i])
         tab1.chat_message("ai").write(st.session_state["ai"][i])
 
-'''
-def save_chat_history(title):
-    pickle.dump(
-        st.session_state.history,
-        open(os.path.join("./chat_history", f"{title}.pkl"), "wb"),
-    )
-
-
-def load_chat_history(filename):
-    with open(os.path.join("./chat_history", f"{filename}.pkl"), "rb") as f:
-        st.session_state.history = pickle.load(f)
-        print(st.session_state.history)
-        st.session_state.user.clear()
-        st.session_state.ai.clear()
-        for user, ai in st.session_state.history:
-            add_history("user", user)
-            add_history("ai", ai)
-
-
-def load_chat_history_list():
-    files = os.listdir("./chat_history")
-    files = [f.split(".")[0] for f in files]
-    return files
-
-
-with st.sidebar:
-
-    clear_btn = st.button("대화내용 초기화", type="primary", use_container_width=True)
-    save_title = st.text_input(
-        "저장할 제목",
-    )
-    save_btn = st.button("대화내용 저장", use_container_width=True)
-
-    if clear_btn:
-        st.session_state.history.clear()
-        st.session_state.user.clear()
-        st.session_state.ai.clear()
-        print_history()
-
-    if save_btn and save_title:
-        save_chat_history(save_title)
-
-    selected_chat = st.selectbox(
-        "대화내용 불러오기", load_chat_history_list(), index=None
-    )
-    load_btn = st.button("대화내용 불러오기", use_container_width=True)
-    if load_btn and selected_chat:
-        load_chat_history(selected_chat)
-'''
-
 print_history()
 
 if prompt := st.chat_input():
