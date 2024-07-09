@@ -112,7 +112,7 @@ def print_history():
         tab1.chat_message("user").write(st.session_state["user"][i])
         tab1.chat_message("ai").write(st.session_state["ai"][i])
 
-
+'''
 def save_chat_history(title):
     pickle.dump(
         st.session_state.history,
@@ -160,7 +160,7 @@ with st.sidebar:
     load_btn = st.button("대화내용 불러오기", use_container_width=True)
     if load_btn and selected_chat:
         load_chat_history(selected_chat)
-
+'''
 
 print_history()
 
