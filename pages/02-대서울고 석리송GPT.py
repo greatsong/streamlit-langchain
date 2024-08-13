@@ -9,21 +9,23 @@ import pickle
 import datetime
 import settings
 
-st.title("석리송의 Perplexity(Online)")
 
 # API KEY 를 설정합니다.
-if "api_key2" not in st.session_state:
+if "api_key" not in st.session_state:
     config = settings.load_config()
-    if "api_key2" in config:
-        st.session_state.api_key2 = settings.load_config()["api_key2"]
+    if "api_key" in config:
+        st.session_state.api_key = settings.load_config()["api_key"]
     else:
-        st.session_state.api_key2 = ""
+        st.session_state.api_key = ""
+
+st.title("대서울고 정보 수업 전용 석리송GPT")
 
 st.markdown(
     f"""API KEY
-    `{st.session_state.api_key2[:-20] + '***************'}`
+    `{st.session_state.api_key[:-15] + '***************'}`
     """
 )
+
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -58,11 +60,10 @@ class StreamCallback(BaseCallbackHandler):
 
 # ChatOpenAI 객체를 생성합니다.
 llm = ChatOpenAI(
-    model="llama-3-sonar-large-32k-online",
-    base_url="https://api.perplexity.ai",
+    model="gpt-4o",
     streaming=True,
     callbacks=[StreamCallback(st.empty())],
-    api_key=st.session_state.api_key2,
+    api_key=st.session_state.api_key,
 )
 
 # ConversationChain 객체를 생성합니다.
@@ -70,8 +71,10 @@ conversation = ConversationChain(
     llm=llm, verbose=False, memory=ConversationBufferMemory()
 )
 
-#prompt_preset = "질문에 친절하게 답해주세요."
-prompt_input = tab2.text_area("Prompt")
+prompt_preset = "서울시 서초구에 있는 서울고등학교 전용 챗봇이야. 고등학생들이 학습하는데 최대한 도움이 될 수 있도록 답을 작성해주고, 특히 파이썬 관련 질문에 대해서는 우주 최강 전문가 수준으로 친절하고 자세하게 알려주고, 같이 공부하면 좋을 예제 프로그램도 제시해주렴!"
+
+prompt_input = prompt_preset # 수정
+#prompt_input = tab2.text_area("Prompt", value=prompt_preset)
 
 
 def create_prompt_template(prompt_input):
@@ -97,7 +100,7 @@ if prompt_input:
     prompt_template = create_prompt_template(prompt_input)
     conversation.prompt = prompt_template
 
-model_input = tab2.selectbox("Model", ["llama-3-70b-instruct", "llama-3-sonar-large-32k-online"], index=1)
+model_input = tab2.selectbox("Model", ["gpt-3.5-turbo", "gpt-4o"], index=1)
 
 if model_input:
     settings.save_config({"model": model_input})
@@ -109,56 +112,6 @@ def print_history():
     for i in range(len(st.session_state.ai)):
         tab1.chat_message("user").write(st.session_state["user"][i])
         tab1.chat_message("ai").write(st.session_state["ai"][i])
-
-
-def save_chat_history(title):
-    pickle.dump(
-        st.session_state.history,
-        open(os.path.join("./chat_history", f"{title}.pkl"), "wb"),
-    )
-
-
-def load_chat_history(filename):
-    with open(os.path.join("./chat_history", f"{filename}.pkl"), "rb") as f:
-        st.session_state.history = pickle.load(f)
-        print(st.session_state.history)
-        st.session_state.user.clear()
-        st.session_state.ai.clear()
-        for user, ai in st.session_state.history:
-            add_history("user", user)
-            add_history("ai", ai)
-
-
-def load_chat_history_list():
-    files = os.listdir("./chat_history")
-    files = [f.split(".")[0] for f in files]
-    return files
-
-
-with st.sidebar:
-
-    clear_btn = st.button("대화내용 초기화", type="primary", use_container_width=True)
-    save_title = st.text_input(
-        "저장할 제목",
-    )
-    save_btn = st.button("대화내용 저장", use_container_width=True)
-
-    if clear_btn:
-        st.session_state.history.clear()
-        st.session_state.user.clear()
-        st.session_state.ai.clear()
-        print_history()
-
-    if save_btn and save_title:
-        save_chat_history(save_title)
-
-    selected_chat = st.selectbox(
-        "대화내용 불러오기", load_chat_history_list(), index=None
-    )
-    load_btn = st.button("대화내용 불러오기", use_container_width=True)
-    if load_btn and selected_chat:
-        load_chat_history(selected_chat)
-
 
 print_history()
 
