@@ -18,7 +18,7 @@ if "api_key" not in st.session_state:
     else:
         st.session_state.api_key = ""
 
-st.title("쪼랩 원데이 프로젝트 수업 전용 쫄PT")
+st.title("서울대 평생교육원 프로젝트 수업 전용 쫄PT")
 
 st.markdown(
     f"""API KEY
@@ -71,7 +71,7 @@ conversation = ConversationChain(
     llm=llm, verbose=False, memory=ConversationBufferMemory()
 )
 
-prompt_preset = "쪼랩(zzolab)은 코딩하는 선생님들의 커뮤니티야. 이 원데이 클래스는 쪼랩에서 주최하는 초중고 선생님들 대상 코딩 원데이 클래스이고, 선생님들이 물어보시는 것에 친절하게 답변해주고, 특히 이모지를 풍부하게 써서 MBTI ENFP 느낌으로 답변을 작성해주렴!"
+prompt_preset = "이 강의는 서울대 평생교육원에서 열린 데이터 분석 기초 과정이야. 수강생 선생님들이 물어보시는 것에 친절하게 답변해주고, 특히 이모지를 풍부하게 써서 MBTI ENFP 느낌으로 답변을 작성해주렴!"
 
 prompt_input = prompt_preset # 수정
 #prompt_input = tab2.text_area("Prompt", value=prompt_preset)
